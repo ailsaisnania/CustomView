@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Custom View</string>
+    <string name="change_language">Change Language</string>
+    <string name="isi"> Fill with last name </string>
+</resources>
