@@ -17,6 +17,7 @@ import androidx.core.os.LocaleListCompat;
 
 public class EditTextWithClear extends AppCompatEditText {
     Drawable mClearButtonImage;
+    boolean isClearButtonClicked;
 
     private void init() {
         mClearButtonImage = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_clear_opaque_24dp, null);
@@ -30,14 +31,7 @@ public class EditTextWithClear extends AppCompatEditText {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String codeLanguage = String.valueOf(LocaleListCompat.getAdjustedDefault());
-
-                if (codeLanguage != "ar_EG"){
                     ShowClearButton();
-                }
-                else {
-                    ShowArabicClearButton();
-                }
 
             }
 
@@ -50,28 +44,42 @@ public class EditTextWithClear extends AppCompatEditText {
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                String codeLanguage = String.valueOf(LocaleListCompat.getAdjustedDefault());
+//                if (getCompoundDrawables()[2] != null) {
+//                    float clearButtonStart = (getWidth()- getPaddingEnd()- mClearButtonImage.getIntrinsicWidth());
+//
+//                    boolean isClearButtonClicked = false;
+//
+//                    if (motionEvent.getX() > clearButtonStart) {
+//                        isClearButtonClicked = true;
+//                    }
+                if(getCompoundDrawablesRelative()[2] != null) {
+                    if (getLayoutDirection() == LAYOUT_DIRECTION_RTL){
+                        //Untuk penggunaan right to left
+                        float clearButtonEnd = mClearButtonImage.getIntrinsicWidth() + getPaddingStart();
+                        isClearButtonClicked = false;
 
-                if (getCompoundDrawables()[2] != null) {
-                    float clearButtonStart = (getWidth()- getPaddingEnd()- mClearButtonImage.getIntrinsicWidth());
+                        if (motionEvent.getX() < clearButtonEnd){
+                            isClearButtonClicked = true;
+                        }
 
-                    boolean isClearButtonClicked = false;
+                    }else{
+                        float clearButtonStart =
+                                (getWidth() - getPaddingEnd() - mClearButtonImage.getIntrinsicWidth());
 
-                    if (motionEvent.getX() > clearButtonStart) {
-                        isClearButtonClicked = true;
+                        isClearButtonClicked = false;
+
+                        if (motionEvent.getX() > clearButtonStart){
+                            isClearButtonClicked = true;
+                        }
                     }
+                    //Untuk penggunaan left to right
+
+
 
                     if (isClearButtonClicked) {
                         if (motionEvent
                                 .getAction() == MotionEvent.ACTION_DOWN) {
                             mClearButtonImage = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_clear_black_24dp, null);
-                            if (codeLanguage!= "ar_EG"){
-                                ShowClearButton();
-                            }
-
-                            else {
-                                ShowArabicClearButton();
-                            }
 
                         }
 
@@ -108,17 +116,21 @@ public class EditTextWithClear extends AppCompatEditText {
         init();
     }
 
+
     //menampilkan clear button di sebelah kanan
     private  void ShowClearButton(){
-        setCompoundDrawablesWithIntrinsicBounds(null, null, mClearButtonImage, null);
+        setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, mClearButtonImage, null);
     }
 
+
+
+    //menampilkan clear button di sebelah kiri
     private void ShowArabicClearButton(){
-        setCompoundDrawablesWithIntrinsicBounds(mClearButtonImage, null, null,null);
+        setCompoundDrawablesRelativeWithIntrinsicBounds(mClearButtonImage, null, null, null);
     }
 
     private  void HideClearButton(){
-        setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+        setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
     }
 
 
